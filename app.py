@@ -21,7 +21,7 @@ def index():
         new_movie = Movies(name=movie_content)
         try:
             db.session.add(new_movie)
-            db.session.commit()
+            db.session.commit() # this like the save() statement
             return redirect('/')
         except:
             return 'Problem adding that movie into the database'
@@ -39,6 +39,20 @@ def delete(id):
         return redirect('/')
     except:
         return 'That movie had a problem while deleting'
+
+@app.route('/update/<int:id>', methods=['GET','POST'])
+def update(id):
+    updatingMovie = Movies.query.get_or_404(id)
+
+    if request.method == 'POST':
+        updatingMovie.name = request.form['content']
+        try:
+            db.session.commit()
+            return redirect('/')
+        except:
+            return "That movie had an issue while updating"
+    else:
+        return render_template('update.html',movie=updatingMovie)
 
 
 if __name__ == '__main__':
